@@ -1,0 +1,109 @@
+---
+title: "Lista de exercícios 1 - Métodos Computacionais Aplicados"
+author: "WILLIAM BRUNO SALES DE PAULA LIMA - 497345, MARCOS VINICIUS ANDRADE DE SOUSA - 496788"
+output: html_notebook
+---
+
+**QUESTÃO 09** - A autorização de despejo para uma indústria requer que a concentração médiamensal de Carbono Orgânico Dissolvido (COD) seja inferior a 50 mg/L. A indústria quer que isso seja interpretado como 50 mg/L está dentro do intervalo de confiança da média, que vai ser estimada 5 a partir de 20 observações por mês. Para as 20 observações a seguir, estaria a indústria emconformidade com esta interpretação do padrão?
+```{r}
+cod <- c(57, 60, 49, 50, 51, 60, 49, 53, 49, 56, 64, 60, 49, 52, 69, 40, 44, 38, 53, 66)
+```
+------------------------------------------------------------------------------------
+a) Apresente um resumo estatístico do vetor COD
+```{r}
+summary(cod)
+```
+Utilizando a função *summary*, podemos observar o valor mínimo, valor do primeiro quantil, mediana, média, valor do terceiro quantil e valor máximo, respectivamente.
+------------------------------------------------------------------------------------
+b) Ordene o vetor do menor para o maior valor
+```{r}
+ordenado <- sort(cod)
+print(ordenado)
+```
+------------------------------------------------------------------------------------
+c) Crie um gráfico de ramos e folhas a partir destes dados.
+```{r}
+stem(ordenado)
+```
+------------------------------------------------------------------------------------
+d) Crie um gráfico de caixa e avalie se a distribuição dos dados é simétrica ou não.
+```{r}
+boxplot(ordenado, main="Boxplot de dados")
+```
+Resposta: Não é uma distribuição simétrica, pois percebemos que o traço mais escuro, que representa a mediana, e os dados estão mais concentrados após a mediana dos mesmos. Portanto, não é uma distribuição simétrica.
+------------------------------------------------------------------------------------
+e) Realize um teste de hipótese bicaudal para averiguar se de fato a média de COD é igual a 50.0. Utilize níveis de significância de 1%, 5% e 10%, respectivamente. Interprete os resultados dos testes.
+Resposta: 
+
+### Considerações
+
+Utilizaremos o valor 50.0 como valor da média de referência. Aplicaremos o teste T Student para validar nossas hipóteses.
+
+### Hipóteses
+
+Hipótese nula (H0): A média de COD é igual a 50.0.
+Hipótese alternativa (H1): A média de COD é diferente de 50.0.
+
+Vamos realizar os testes utilizando nívels de significância de 1%, 5%, 10%
+```{r}
+# Valor da média de referência
+media_referencia <- 50.0
+
+# Níveis de significância
+niveis_significancia <- c(0.01, 0.05, 0.10)
+
+# Realizando o teste de hipótese para cada nível de significância
+for (nivel in niveis_significancia) {
+  resultado_teste <- t.test(ordenado, mu = media_referencia, alternative = "two.sided", conf.level = 1 - nivel)
+  
+  cat("Nível de Significância:", nivel, "\n")
+  cat("Estatística do teste t:", resultado_teste$statistic, "\n")
+  cat("Valor-p:", resultado_teste$p.value, "\n")
+  
+  # Interpretando o resultado com base no valor-p e no nível de significância
+  if (resultado_teste$p.value < nivel) {
+    cat("Rejeitar H0: A média é diferente de", media_referencia, "\n\n")
+  } else {
+    cat("Não rejeitar H0: Não há evidência de que a média é diferente de", media_referencia, "\n\n")
+  }
+}
+```
+Portanto, para os níveis de significância 1% e 5%, o teste T não rejeita nossa hipótese inicial H0 de que a média do COD é igual a 50. No entanto, ao utilizarmos o nível de 10%, o teste T rejeita a hipótese de que a média é igual a 50.
+------------------------------------------------------------------------------------
+**QUESTÃO 10** - Um biólogo foi ao campo e contou o número de sapos em 20 locais. Ele também anotou a umidade (umid) e a temperatura (temp) em cada local. 
+Os dados são:
+sapos 6-5-10-11-26-16-17-37-18-21-22-15-24-25-29-31-32-13-39-40 
+umid 62-24-21-30-34-36-41-48-56-74-57-46-58-61-68-76-79-33-85-86 
+temp 31-23-28-30-15-16-24-27-18-10-17-13-25-22-34-12-29-35-26-19
+------------------------------------------------------------------------------------
+a) Faça dois gráficos de pontos para mostrar a relação do número de sapos com as variáveis temperatura e umidade. Use a função par( ) para dividir a janela em duas
+```{r}
+# Dados
+sapos <- c(6, 5, 10, 11, 26, 16, 17, 37, 18, 21, 22, 15, 24, 25, 29, 31, 32, 13, 39, 40)
+umid <- c(62, 24, 21, 30, 34, 36, 41, 48, 56, 74, 57, 46, 58, 61, 68, 76, 79, 33, 85, 86)
+temp <- c(31, 23, 28, 30, 15, 16, 24, 27, 18, 10, 17, 13, 25, 22, 34, 12, 29, 35, 26, 19)
+
+# Dividir a janela gráfica em duas partes
+par(mfrow = c(1, 2))
+
+# Gráfico de pontos para relação com temperatura
+plot(temp, sapos, main = "Relação entre Sapos e Temperatura", xlab = "Temperatura", ylab = "Número de Sapos")
+
+# Gráfico de pontos para relação com umidade
+plot(umid, sapos, main = "Relação entre Sapos e Umidade", xlab = "Umidade", ylab = "Número de Sapos")
+```
+------------------------------------------------------------------------------------
+b) Utilize o pacote rgl para criar um gráfico 3D com os três vetores acima.
+Instalando package rgl
+```{r}
+install.packages("scatterplot3d")
+```
+Carregando package rgl
+```{r}
+library("rgl")
+```
+Criando gráfico
+```{r}
+plot3d(temp, umid, sapos, type = "s", xlab = "Temperatura", ylab = "Umidade", zlab = "Número de Sapos", col = "blue")
+```
+
