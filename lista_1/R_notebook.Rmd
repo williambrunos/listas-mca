@@ -224,13 +224,13 @@ plot(umid, sapos, main = "Relação entre Sapos e Umidade", xlab = "Umidade", yl
 b) Utilize o pacote rgl para criar um gráfico 3D com os três vetores acima.
 Instalando package rgl
 ```{r}
-install.packages("scatterplot3d")
+install.packages("rgl")
 ```
 Carregando package rgl
 ```{r}
 library("rgl")
 ```
-Criando gráfico
+Criando gráfico requisitado
 ```{r}
 plot3d(temp, umid, sapos, type = "s", xlab = "Temperatura", ylab = "Umidade", zlab = "Número de Sapos", col = "blue")
 ```
