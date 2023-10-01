@@ -4,6 +4,134 @@ author: "WILLIAM BRUNO SALES DE PAULA LIMA - 497345, MARCOS VINICIUS ANDRADE DE 
 output: html_notebook
 ---
 
+**Questão 06** - O professor de uma turma de Economia precisa fechar as notas do semestre. A
+avaliação é feita através de duas provas (peso 40% cada prova) e um trabalho final (peso 20%).
+Utilizando seed = 20, crie no R uma tabela com as notas de cada aluno com o seguinte código:
+    set.seed(seed)
+    notas <- data.frame(
+    Matricula = sample(x = 011475:012990, size = 30, replace = FALSE),
+    Prova1 = sample(x = 1:10, size = 30, replace = TRUE),
+    Prova2 = sample(x = 1:10, size = 30, replace = TRUE),
+    Trabalho_Final = sample(x = 1:10, size = 30, replace = TRUE)
+    )
+Crie uma nova coluna que informe a média e outra com o resultado se o aluno foi aprovado ou se está
+reprovado. Obs.: Para ser aprovado o aluno precisa ter média igual ou superior a 6.
+
+```{r}
+seed <- 20
+
+set.seed(seed)
+
+set.seed(seed)
+  notas <- data.frame(
+  Matricula = sample(x = 011475:012990, size = 30, replace = FALSE),
+  Prova1 = sample(x = 1:10, size = 30, replace = TRUE),
+  Prova2 = sample(x = 1:10, size = 30, replace = TRUE),
+  Trabalho_Final = sample(x = 1:10, size = 30, replace = TRUE)
+)
+
+notas$Media_Ponderada <- (notas$Prova1 * 0.4 + notas$Prova2 * 0.4 + notas$Trabalho_Final * 0.2)
+
+notas$Resultado <- ifelse(notas$Media >= 6, "Aprovado", "Reprovado")
+
+notas
+```
+**Questão 07** – Faça o que se pede
+
+A) Crie um vetor com os nomes dos alunos Pedro, João e Maria;
+```{r}
+alunos <- c("Pedro", "João", "Maria")
+
+alunos
+```
+B) Crie uma matriz 3x3 com os números pares iniciando em 2 e finalizando em 18. Ordenar pela linha.
+```{r}
+matriz <- matrix(seq(2, 18, by = 2), nrow = 3, ncol = 3, byrow = TRUE)
+
+matriz
+```
+C) Crie uma lista com os objetos criados nos itens (a) e (b).
+```{r}
+minha_lista <- list(alunos, matriz)
+
+minha_lista
+```
+D) Consultar apenas o objeto que se encontra na primeira posição da lista.
+```{r}
+primeiro_elemento <- minha_lista[[1]]
+
+primeiro_elemento
+```
+E) Suponha que você digitou um nome errado e que em vez de Maria o nome correto seria Mariana. Proceder com a alteração a partir da lista criada.
+```{r}
+minha_lista[[1]][which(minha_lista[[1]] == "Maria")] <- "Mariana"
+
+minha_lista[[1]]
+```
+F) Substitua o valor 10 por 100 na matriz que se encontra dentro da lista.
+```{r}
+minha_lista[[2]][minha_lista[[2]] == 10] <- 100
+
+minha_lista[[2]]
+```
+
+**Questão 08** Gere as seguintes sequências e atribua a uma variável:
+
+A) x1 = 1, 2, 3, 4
+```{r}
+x1 <- 1:4
+
+x1
+```
+B) x2 = 2, 5, 8, 11
+```{r}
+x2 <- seq(2, 11, by = 3)
+
+x2
+```
+C) x3 = A, B, C, D
+```{r}
+x3 <- LETTERS[1:4]
+
+x3
+```
+D) x4 = a, b, c, d
+```{r}
+x4 <- letters[1:4]
+
+x4
+```
+E) x5 = A, C, E, G
+```{r}
+x5 <- LETTERS[1:4 * 2 - 1]
+
+x5
+```
+F) x6 = 10, 9, 8, 7
+```{r}
+x6 <- 10:7
+
+x6
+```
+G) x7 = 10, 8, 6, 4
+```{r}
+x7 <- seq(10, 4, by = -2)
+
+x7
+```
+H) x8 = 2, 2, 2, 2, 5, 5, 5, 5, 8, 8, 8, 8
+```{r}
+x8 <- rep(c(2, 5, 8), each = 4)
+
+x8
+```
+I) x9 = recebe todas as sequências anteriores (x1, x2, x3, x4, x5, x6, x7, x8)
+```{r}
+x9 <- list(x1, x2, x3, x4, x5, x6, x7, x8)
+
+x9
+```
+
 **QUESTÃO 09** - A autorização de despejo para uma indústria requer que a concentração médiamensal de Carbono Orgânico Dissolvido (COD) seja inferior a 50 mg/L. A indústria quer que isso seja interpretado como 50 mg/L está dentro do intervalo de confiança da média, que vai ser estimada 5 a partir de 20 observações por mês. Para as 20 observações a seguir, estaria a indústria emconformidade com esta interpretação do padrão?
 ```{r}
 cod <- c(57, 60, 49, 50, 51, 60, 49, 53, 49, 56, 64, 60, 49, 52, 69, 40, 44, 38, 53, 66)
