@@ -6,6 +6,10 @@ output: html_notebook
 
 # Questão 1 
 
+Utilize os pacotes “PNADcIBGE”, “survey” e “dplyr” para importar e manipular 
+os dados da PNAD Contínua, referentes ao primeiro trimestre de 2023. Em seguida, obtenha as 
+informações a seguir:
+
 ## Importação de bibliotecas
 
 Código "set it and forget it" para que a instalação de libs funcione fora do RStudio:
@@ -96,3 +100,65 @@ num2 <- 5
 result <- soma_e_divide_por_dois(num1, num2)
 print(result)
 ```
+
+# Questão 3
+As taxas de aluguel são influenciadas pela população de estudantes em uma cidade 
+onde há universidades? Seja rent o aluguel médio mensal pago pela unidade alugada em uma 
+determinada cidade, onde há universidades. Seja pop o total da população da cidade, avginc, a renda 
+média da cidade e pctstu, a população de estudantes como um percentual da população total. Um 
+modelo para testar uma relação é:
+
+log (rent) = B0 + B1 * log(pop) + B2 * log(avginc) + B3 * pctstu + u
+
+Responda:
+
+(a) Quais sinais você espera para B1 e B2?
+
+Espero que os sinais dos parâmetros sejam ambos positivos, pois acredito que quanto maior a população e a renda média da cidade, 
+maior será o aluguel médio mensal pago pela unidade alugada.
+
+(b) Estime o modelo acima, a partir da base de dados de 1990 de 64 cidades com universidades 
+do arquivo RENTAL.dta (Stata). 
+
+```{r}
+install.packages("haven")
+library(haven)
+```
+
+```{r}
+# Lendo o arquivo .DTA e transformando em dataframe
+rental_data <- read_dta("lista_2/data/RENTAL.DTA")
+
+# Checando as primeiras linhas do dataframe
+head(rental_data)
+
+# Ajustando modelo de regressão linear
+model <- lm(log(rent) ~ log(pop) + log(avginc) + pctstu, data = rental_data)
+
+# Print a summary of the regression model
+summary(model)
+```
+
+(c) Interprete os resultados estimados (Significância global, individual, R quadrado (R-squared) e coerência dos 
+sinais).
+
+Abaixo seguem os resultados obtidos na construção do modelo:
+
+Residual standard error: 0.1517 on 124 degrees of freedom
+Multiple R-squared:  0.7971,    Adjusted R-squared:  0.7922
+F-statistic: 162.4 on 3 and 124 DF,  p-value: < 2.2e-16
+
+O modelo apresenta um R-squared de 0.7971, o que significa que 79.71% da variância da variável dependente (log(rent)) 
+é explicada pelas variáveis independentes (log(pop), log(avginc) e pctstu). 
+O modelo também apresenta um F-statistic de 162.4, o que significa que o modelo é estatisticamente significativo. 
+Além disso, os sinais dos parâmetros são coerentes com o esperado, pois todos são positivos.
+
+(d) O que está errado com a seguinte afirmação: “Um aumento de 10% na população está 
+associado a um aumento de cerca de 6,6% no aluguel”?
+
+O que está errado é que o modelo utiliza transformações logarítimicas tanto na variável dependente,
+quanto nas variáveis independentes, ou seja, os parâmetros são elásticidades.
+
+(e) O modelo é globalmente ajustado? Justifique.
+
+Sim, pois o modelo apresenta um F-statistic de 162.4, o que significa que o modelo é estatisticamente significativo.
