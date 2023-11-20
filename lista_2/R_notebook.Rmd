@@ -1,0 +1,83 @@
+---
+title: "Lista de exercícios 2 - Métodos Computacionais Aplicados"
+author: "WILLIAM BRUNO SALES DE PAULA LIMA - 497345, MARCOS VINICIUS ANDRADE DE SOUSA - 496788"
+output: html_notebook
+---
+
+# Questão 1 
+
+## Importação de bibliotecas
+
+Código "set it and forget it" para que a instalação de libs funcione fora do RStudio:
+
+```{r}
+options(repos='http://cran.rstudio.com/')
+```
+Instalando as bibliotecas necessárias:
+
+```{r}
+install.packages("PNADcIBGE")
+install.packages("survey")
+install.packages("dplyr")
+```
+
+Carregando as bibliotecas:
+
+```{r}
+library(PNADcIBGE)
+library(survey)
+library(dplyr)
+```
+
+Obtendo dados da PNADc referentes ao primeiro trimestre de 2023:
+
+```{r}
+dadosPNADc <- get_pnadc(year = 2023, quarter = 1, 
+                        labels=TRUE, deflator=TRUE, 
+                        design=TRUE, savedir=tempdir())
+```
+
+Agora, com os dados carregados, vamos calcular o item a:
+
+(a) O percentual de pessoas ocupadas por sexo;
+
+```{r}
+totalsexo <- svyratio(~V2007, dadosPNADc, na.rm = T)
+totalsexo
+```
+
+(b) O rendimento médio mensal por sexo;
+
+```{r}
+rendimentoporsexo <- svyby(~VD4020, ~V2007, dadosPNADc, svymean, na.rm = T)
+rendimentoporsexo
+```
+
+(c) A distribuição de pessoas desocupadas por faixa etária (14 a 17 anos, 18 a 24 anos, 25 a 39 
+anos, 40 a 59 anos, 60 anos ou mais);
+
+Primeiro, vamos transformar todas as faixas etárias em uma única variável chamada idade:
+
+```{r}
+dadosPNADc<-update(dadosPNADc, Idade = case_when(
+  V2009 %in% 14:17 ~ "14-17",
+  V2009 %in% 18:24 ~ "18-24", 
+  V2009 %in% 25:39 ~ "25-39", 
+  V2009 %in% 40:59 ~ "40-59", 
+  V2009 > 59 ~ "60+")
+)
+```
+
+Agora, vamos calcular a distribuição de pessoas desocupadas por faixa etária:
+
+```{r}
+perc_desoc_faixa_etaria <- svyby(~Idade, ~VD4002, dadosPNADc, svymean, na.rm = T)
+perc_desoc_faixa_etaria
+```
+
+(d) O rendimento médio mensal por faixa etária;
+
+```{r}	
+rendimento_por_faixa_etaria <- svyby(~VD4020, ~Idade, dadosPNADc, svymean, na.rm = T)
+rendimento_por_faixa_etaria
+```
