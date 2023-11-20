@@ -81,3 +81,18 @@ perc_desoc_faixa_etaria
 rendimento_por_faixa_etaria <- svyby(~VD4020, ~Idade, dadosPNADc, svymean, na.rm = T)
 rendimento_por_faixa_etaria
 ```
+
+# Questão 2
+
+```{r}	
+soma_e_divide_por_dois <- function(x, y) {
+  result <- (x + y) / 2
+  return(result)
+}
+
+num1 <- 10
+num2 <- 5
+
+result <- soma_e_divide_por_dois(num1, num2)
+print(result)
+```
