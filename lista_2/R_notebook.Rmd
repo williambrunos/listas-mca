@@ -162,3 +162,168 @@ quanto nas variáveis independentes, ou seja, os parâmetros são elásticidades
 (e) O modelo é globalmente ajustado? Justifique.
 
 Sim, pois o modelo apresenta um F-statistic de 162.4, o que significa que o modelo é estatisticamente significativo.
+
+# Questão 4
+O arquivo nerlove.xlsx contém dados sobre os custos de produção, quantidade
+produzida e insumos para 145 empresas de energia elétrica. Os dados são para os EUA e foram
+coletados por M. Nerlove. As observações estão na linha, e nas colunas estão as variáveis: CUSTO
+(TC), PRODUTO (Q), PREÇO DO TRABALHO (PL), PREÇO DO COMBUSTÍVEL (PF) e
+PREÇO DO CAPITAL (PK) das companhias. Observe que os dados são classificados por nível de
+produto (a segunda coluna). Estime o modelo Cobb-Douglas:
+
+Observação: Use o Rstudio para importar a base de dados. Em seguida criar as variáveis em logaritmo
+e acrescentar ao dataframe original para, em seguida, realizar a estimação. 
+
+```{r}
+# Carregando a biblioteca
+install.packages("readxl")
+library(readxl)
+```
+
+```{r}
+# Lendo o arquivo nerlove.xlsx
+dados <- read_excel("data/nerlove.xlsx")
+
+# Vizualizando os dados
+print(dados)
+```
+
+```{r}
+# Ajuste do modelo Cobb-Douglas
+modelo <- lm(log(TC) ~ log(Q) + log(PL) + log(PF) + log(PK), data = dados)
+
+# Exibir os resultados
+summary(modelo)
+
+```
+
+(a) Interprete os resultados obtidos (Significância global, individual, R² e coerência dos sinais).
+```{r}
+# Interpretação da significância global
+summary(modelo)$fstatistic
+```
+```{r}
+# Interpretação da significância individual
+summary(modelo)$coefficients[, "Pr(>|t|)"]
+```
+```{r}
+# Interpretação dos coeficientes
+summary(modelo)$coefficients[, "Estimate"]
+```
+
+```{r}
+# Interpretação do R²
+summary(modelo)$r.squared
+```
+
+```{r}
+# Diagnósticos de resíduos
+plot(modelo)
+```
+
+(b) O modelo é globalmente ajustado? Justifique.
+
+0 modelo é globalmente ajustado, pois o R² justado é 0.9238746 de 1.
+```{r}
+# Exemplo de interpretação do R^2 ajustado
+r_squared_adj <- summary(modelo)$adj.r.squared
+
+print(r_squared_adj)
+```
+
+(c) Use o pacote rgl para esboçar um Gráfico 3D com as variáveis PREÇO DO CAPITAL (PK),
+PREÇO DO TRABALHO (PL) e PREÇO DO COMBUSTÍVEL (PF).
+
+```{r}
+install.packages("rgl")
+library(rgl)
+```
+```{r}
+# Gráfico 3D
+with(dados, plot3d(PK, PL, PF, col = "blue", size = 3))
+axes3d(labels = c("PREÇO DO CAPITAL (PK)", "PREÇO DO TRABALHO (PL)", "PREÇO DO COMBUSTÍVEL (PF)"))
+```
+
+(d) Analise a coerência dos sinais dos estimadores. 
+O coeficiente associado a log(Q) é positivo, isso indica uma relação positiva entre a quantidade produzida e o custo total. Assim como o PL e PF, eles tem coenficientes positivos, logo isso indica uma relação positiva entre cada uma dessas variáveis e o custo total. Contudo, o PK é negativo, e isso indica uma relação negativa entre ele e o custo total.
+```{r}
+summary(modelo)
+```
+
+# Questão 5
+A análise de regressão pode ser usada para testar se o mercado usa eficientemente
+as informações ao avaliar ações. Seja return etorno total de possuir ações de uma empresa ao
+longo de um período de quatro anos, do final de 1990 até o final de 1994. A hipótese dos mercados
+eficientes diz que esses retornos não devem estar sistematicamente relacionados à informação
+conhecida em 1990. Se as características conhecidas da empresa no início do período ajudassem a
+prever os retornos das ações, poderíamos usar essas informações para escolher ações.
+
+Para 1990, seja dkr relação dívida-capital de uma empresa, seja eps os ganhos por ação, seja netinc
+a renda líquida e seja salary emuneração total dos CEOs da empresa.
+
+```{r}
+# Instalando Haven
+install.packages("haven")
+library(haven)
+```
+```{r}
+# Lendo return.dta
+dados <- read_dta("data/RETURN.DTA")
+
+print(dados)
+```
+
+(a) Usando os dados do arquivo RETURN.dta, estime e interprete o modelo:
+# return = b0 + b1*dkr + b2*eps + b3*netinc + b4*salary + u
+
+```{r}
+# modelo
+modelo <- lm(return ~ dkr + eps + netinc + salary, data = dados)
+
+summary(modelo)
+```
+
+(b) As variáveis explicativas são conjuntamente significantes ao nível de 5%? Alguma variável
+explicativa é individualmente significante?
+
+Menor que 5% elas são conjuntamente não significativas, e todas as variáveis são menores que 5%.
+
+```{r}
+# Teste F, compara o modelo completo (com todas as variáveis explicativas) com um modelo reduzido que exclui todas as variáveis explicativas. 
+anova_global <- anova(modelo)
+
+print(anova_global)
+```
+
+(c) Agora estime o modelo anterior usando a forma log para netinc e salary: 
+# return = b0 + b1*dkr + b2*eps + b3*log(netinc) + b4*log(salary) + u
+Alguma de suas conclusões no item (a) mudou?
+
+Não mudou, pois os valores são menores que 5%, e tem o mesmo sinal.
+```{r}
+# Aplicar log nas variáveis netinc e salary
+dados$log_netinc <- log(dados$netinc)
+dados$log_salary <- log(dados$salary)
+
+# Estimar o modelo com a forma log
+modelo_log <- lm(return ~ dkr + eps + log_netinc + log_salary, data = dados)
+
+summary(modelo_log)
+```
+
+(d) Em geral, a evidência da previsibilidade dos retornos é forte ou fraca?
+São fortes, pois as variáveis explicativas são conjuntamente significantes ao nível de 5%, porém a capacidade do modelo em explicar a variabilidade dos dados é fraca, pois o R² está longe de 1.
+
+```{r}
+# Estimar o modelo com a forma log
+modelo_log <- lm(return ~ dkr + eps + log_netinc + log_salary, data = dados)
+
+# Resumo do modelo com a forma log
+resumo_modelo <- summary(modelo_log)
+
+# Obter o R² ajustado
+r_squared_ajustado <- resumo_modelo$adj.r.squared
+
+# Imprimir o R² ajustado
+print(r_squared_ajustado)
+```
